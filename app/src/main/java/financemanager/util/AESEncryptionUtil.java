@@ -1,5 +1,6 @@
 package financemanager.util;
 
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.SecureRandom;
@@ -14,7 +15,7 @@ public class AESEncryptionUtil {
     private static final String ALGORITHM = "AES/CBC/PKCS5Padding";
     private static final int IV_SIZE = 16;
 
-    public static void encryptAndSave(byte[] data, Path outputPath, SecretKey key) throws Exception {
+    public static void encryptAndSave(byte[] data, OutputStream out, SecretKey key) throws Exception {
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         byte[] iv = new byte[IV_SIZE];
         new SecureRandom().nextBytes(iv);
@@ -23,13 +24,9 @@ public class AESEncryptionUtil {
         cipher.init(Cipher.ENCRYPT_MODE, key, ivSpec);
         byte[] encrypted = cipher.doFinal(data);
 
-        // Prepend IV to encrypted content
-        byte[] finalData = new byte[IV_SIZE + encrypted.length];
-        System.arraycopy(iv, 0, finalData, 0, IV_SIZE);
-        System.arraycopy(encrypted, 0, finalData, IV_SIZE, encrypted.length);
-
-        Files.write(outputPath, finalData);
-    }
+        out.write(iv);
+        out.write(encrypted);
+    }   
 
     public static byte[] loadAndDecrypt(Path inputPath, SecretKey key) throws Exception {
         byte[] fileContent = Files.readAllBytes(inputPath);
