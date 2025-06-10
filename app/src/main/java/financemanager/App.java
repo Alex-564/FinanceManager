@@ -10,10 +10,8 @@ public class App {
          SwingUtilities.invokeLater(() -> {
             MainFrame frame = new MainFrame();
 
-            // // Register all modules
-            // frame.registerModule(new TransactionsPanel());
-            // frame.registerModule(new BudgetsPanel());
-            // frame.registerModule(new ReportsPanel());
+            // Register available modules
+            frame.registerModule(new financemanager.ui.modules.ReportsModule());
 
             frame.setVisible(true);
         });
